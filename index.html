@@ -8,22 +8,45 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script type="text/babel">//babel이 JSX를 번역하도록 타입을 지정
         const root = document.getElementById("root");
-        //해당 코드를 복사 붙여넣기 해주는 것과 동일
-        //컴포넌트로 만들어서 사용해야하고 직접 만든 컴포넌트의 첫글자는 반드시 대문자여야 한다
-        //동일한 코드를 재사용할 수 있는 방법
         function App(){
-            const [counter, setCounter] = React.useState(0); //data의 초기값을 0으로 설정, state를 바꿀 수 있는 함수와 함께 배열 형태로 리턴
-            const onClick = () => {
-                //state 세팅 방법1 : React.useState를 통해 만들어진 함수에 직접 할당
-                //state 세팅 방법2 : 이전 값을 바탕으로 현재 값을 설정
-                //setCounter(counter + 1);
-                // 함수의 첫번째 인자는 현재의 상태를 의미
-                setCounter((current) => current + 1); //함수를 통해 설정하기 때문에 현재 상태를 보장
+            const [amount, setAmount] = React.useState(0);
+            const [inverted, setInverted] = React.useState(false);
+            const onChange = (event) => {
+                setAmount(event.target.value);
             };
+            const reset = () => setAmount(0);
+            const onInverted = () => {
+                reset();
+                setInverted((current) => !current);
+            }
             return (
             <div>
-                <h3>Total clicks: {counter}</h3>
-                <button onClick= {onClick}>Click me</button>
+            <div>
+                <h1 className="hi">Super Converter</h1>
+                <label htmlFor="minutes">Minutes</label>
+                <input 
+                    value={inverted ? amount * 60 : amount} 
+                    id="minutes" 
+                    placeholder="Minutes" 
+                    type="number"
+                    onChange={onChange} 
+                    disabled={inverted}
+                />
+            </div>
+
+            <div>
+                <label htmlFor="hours">Hours</label>
+                <input 
+                    value={inverted ? amount : Math.round(amount / 60)} 
+                    id="hours" 
+                    placeholder="Hours" 
+                    type="number" 
+                    disabled={!inverted}
+                    onChange={onChange}
+                />
+            </div>
+            <button onClick={reset}>Reset</button>
+            <button onClick={onInverted}>{inverted? "Turn back":"Invert"}</button>
             </div>
             );
         }
