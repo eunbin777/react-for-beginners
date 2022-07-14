@@ -8,24 +8,31 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script type="text/babel">//babel이 JSX를 번역하도록 타입을 지정
         //props는 첫번째이자 유일한 인자로 보낸 모든 것들을 가지는 object이다.
+        //props에 담겨서 전달된 함수들을 직접 return에 적용해줘야함
         function Btn(props) {
-            return <button style={{
+            return <button 
+            onClick = {props.changeValue}
+            style={{
                 backgroundColor: "tomato",
                 color: "white",
                 padding: "10px 20px",
                 border: 0,
                 borderRadius: 10,
-                fontSize: props.big? 18 : 16
             }}>
                 {props.text}
             </button>
         }
+        //부모 컴포넌트의 state를 변경하면 자식 컴포넌트도 전부 re-render
+        //re-render과정에서 props가 변경되지 않은 경우에는 memo된 내용을 재사용
+        const MemorizedBtn = React.memo(Btn);
         //divide and conquer
         function App(){
+            const [value, setValue] = React.useState("Save Changes");
+            const changeValue = () => setValue("Revert Changes");
             return (
             <div>
-                <Btn text="Save Changes" big = {true}/>
-                <Btn text="Continue" big = {false}/>
+                <MemorizedBtn text={value} changeValue={changeValue} />
+                <MemorizedBtn text="Continue" />
             </div>
             );
         }
